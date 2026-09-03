@@ -1,8 +1,8 @@
 # ReSolveSA Core Processing Pipeline
 
-A comprehensive pipeline for processing drill core tray images from NVCL data, extracting segments, and mapping them to lithology and geochemistry data from SARIG.
+Drill core is the ground truth of mineral exploration: every metre is photographed, logged for rock type, and assayed for chemistry. Those three records sit in separate government databases with nothing linking a spot on a core photo to the lithology and grades measured there. **ReSolveSA rebuilds that link for South Australian open data.** It pulls core-tray images from the National Virtual Core Library (NVCL), cleans and segments them, reads their printed depth marks, and joins every segment to the matching SARIG lithology log and geochemical assay by drillhole and depth. The result is one table where each row is a short depth interval carrying both what the rock looks like and what it is made of: the kind of paired visual-and-chemical data that multimodal geology models need and rarely have.
 
-The dataset this pipeline produces is published at [**huggingface.co/datasets/EigenformAI/ReSolveSA**](https://huggingface.co/datasets/EigenformAI/ReSolveSA) (17,992 core-segment rows linked to SARIG lithology and geochemistry).
+The output table is published at [**huggingface.co/datasets/EigenformAI/ReSolveSA**](https://huggingface.co/datasets/EigenformAI/ReSolveSA) (17,992 core-segment rows linked to SARIG lithology and geochemistry), so you can use the data without running the pipeline.
 
 ## Overview
 
@@ -375,6 +375,26 @@ ReSolveSA/
 ```
 
 ---
+
+## FAQ
+
+**Do I have to download the 21 GB geochemistry file?**
+For a full run, yes, but pre-filter it to your drillholes first (see [Large File Handling](#required-files)). The full file needs 32+ GB of RAM; a filtered copy is small.
+
+**Are the core images hyperspectral?**
+No. They are ordinary RGB photographs of core trays from NVCL. The pipeline is computer vision on JPEGs, not spectral analysis.
+
+**Do I need an OpenAI API key?**
+Only for the depth-label OCR step, and only if you use the bundled `helper/openai_ocr.py` (GPT-4o vision). Any OCR works (Google Vision, Azure, Claude, Tesseract, or manual entry) as long as it writes `tray_depth_labels.jsonl` in the documented format.
+
+**Can I use the output dataset without running the pipeline?**
+Yes. `segments_with_geochem.csv` is published at [huggingface.co/datasets/EigenformAI/ReSolveSA](https://huggingface.co/datasets/EigenformAI/ReSolveSA).
+
+**Does this work for drill core outside South Australia?**
+The image steps (tray detection, segmentation, OCR) are generic. The lithology and geochemistry mapping is written against SARIG's column names and schema, so another survey's logs and assays would need their columns remapped.
+
+**How is a segment matched to its lithology and assay?**
+Each segment gets an interpolated depth from the OCR labels, then is joined to any SARIG interval whose `depth_from_m` to `depth_to_m` range contains that depth, for the same drillhole. Segmentation resolution is fixed by `SEGMENTS_PER_CORE` (default 10) in `unified_pipeline.py`.
 
 ## License
 
