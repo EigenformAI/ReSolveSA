@@ -2,6 +2,8 @@
 
 A comprehensive pipeline for processing drill core tray images from NVCL data, extracting segments, and mapping them to lithology and geochemistry data from SARIG.
 
+The dataset this pipeline produces is published at [**huggingface.co/datasets/EigenformAI/ReSolveSA**](https://huggingface.co/datasets/EigenformAI/ReSolveSA) (17,992 core-segment rows linked to SARIG lithology and geochemistry).
+
 ## Overview
 
 This pipeline processes drill core tray images through four sequential steps:
@@ -290,6 +292,8 @@ Contains all processed segments with:
 - **Lithology data:** major_lithology, depth_from_m, depth_to_m, etc.
 - **Geochemistry data:** chem_code, value, unit, chem_method_code, chem_method_desc
 
+This file is published as a dataset at [huggingface.co/datasets/EigenformAI/ReSolveSA](https://huggingface.co/datasets/EigenformAI/ReSolveSA).
+
 ### Intermediate Files
 
 - `cores_extracted/` - Cleaned tray images (Step 1 output)
@@ -374,8 +378,8 @@ ReSolveSA/
 
 ## License
 
-[Add your license information here]
+[MIT](LICENSE).
 
 ## Contact
 
-[Add contact information here]
+Open an issue on [GitHub](https://github.com/EigenformAI/ReSolveSA/issues).
